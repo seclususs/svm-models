@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Hasil Klasifikasi Massal{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold">Hasil Analisis</h1>
+        <p id="status-text" class="lead text-muted">Memproses {{ files|length }} gambar... Hasil akan muncul di bawah ini secara otomatis.</p>
+    </div>
+    
+    <div id="result-grid" 
+         class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
+         data-batch-id="{{ batch_id }}"
+         data-files='{{ files|tojson|safe }}'
+         data-process-url="{{ url_for('batch.process_image') }}"
+         data-icon-base-url="{{ url_for('static', filename='icons/') }}">
+
+        {% for file in files %}
+        <div class="col" id="{{ file.id }}">
+            <div class="card h-100 shadow-sm border-0">
+                <img src="{{ url_for('static', filename='uploads/' ~ batch_id ~ '/' ~ file.unique_filename) }}" class="card-img-top" alt="Uploaded Image Preview" style="height: 200px; object-fit: cover;">
+                
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <div class="processing-state">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="card-text text-muted small mt-2 mb-0">Memproses...</p>
+                    </div>
+
+                    <div class="result-state" style="display: none;">
+                        <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+                             <img src="" class="result-icon" alt="icon" style="width: 32px; height: 32px;">
+                             <h5 class="card-title mb-0 prediction-text fw-bold result-prediction"></h5>
+                        </div>
+                        <p class="card-text text-muted small">Keyakinan: <strong class="result-confidence"></strong></p>
+                        
+                        <div class="text-end mt-2">
+                             <a class="btn btn-sm btn-link text-decoration-none text-muted fw-medium p-0" data-bs-toggle="collapse" href="#collapse-{{ file.id }}" role="button" aria-expanded="false">
+                                Tampilkan Rincian
+                            </a>
+                        </div>
+
+                        <div class="collapse mt-3 text-start" id="collapse-{{ file.id }}">
+                            <div class="probability-details-container d-flex flex-column gap-3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent text-center">
+                     <small class="text-muted fst-italic">{{ file.unique_filename }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{{ url_for('main.batch') }}" class="btn btn-outline-primary btn-lg">
+             Unggah Batch Lain
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/batch-result-processor.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Hasil Prediksi - {{ prediction }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10 text-center">
+        <h1 class="display-5 fw-bold mb-4">Hasil Analisis Cuaca</h1>
+
+        <div class="card text-start shadow-lg">
+            <div class="card-body p-4 p-md-5">
+                <div class="row align-items-center g-4 g-lg-5">
+                    <!-- Kolom Gambar -->
+                    <div class="col-md-6">
+                        <img src="{{ url_for('static', filename='uploads/' + filename_thumb) }}" alt="Uploaded Image" class="img-fluid rounded-3 shadow w-100">
+                    </div>
+                    <!-- Kolom Hasil -->
+                    <div class="col-md-6">
+                        <div class="text-center text-md-start">
+                             <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-3 mb-4">
+                                <img src="{{ url_for('static', filename='icons/' ~ icon_name ~ '.svg') }}" 
+                                     data-fallback-src="{{ url_for('static', filename='icons/default.svg') }}"
+                                     onerror="this.onerror=null; this.src=this.dataset.fallbackSrc;" 
+                                     alt="{{ prediction }} icon" 
+                                     class="weather-icon">
+                               <h2 class="display-4 fw-bolder mb-0 prediction-text">{{ prediction }}</h2>
+                            </div>
+                            
+                            <div class="alert alert-light border-0 bg-light-subtle p-3 rounded-3">
+                                <p class="mb-0">{{ description|safe }}</p>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <h5 class="fw-medium mb-3">Rincian Probabilitas</h5>
+                            {% if all_confidences %}
+                                {% set top_prediction = all_confidences[0] %}
+                                {% set other_predictions = all_confidences[1:] %}
+
+                                <div class="probability-item top-probability mb-2">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="fw-bold">{{ top_prediction[0] }}</span>
+                                        <span class="fw-bolder prediction-text">{{ top_prediction[1] }}%</span>
+                                    </div>
+                                    <div class="progress" style="height: 18px;" role="progressbar">
+                                        <div class="progress-bar probability-bar" id="top-progress-bar" data-confidence="{{ top_prediction[1] }}"></div>
+                                    </div>
+                                </div>
+
+                                <div class="text-end mt-2">
+                                     <a class="btn btn-sm btn-link text-decoration-none text-muted fw-medium p-0 details-toggle-link" data-bs-toggle="collapse" href="#collapseProbabilities" role="button" aria-expanded="false" id="toggle-details-btn">
+                                        Tampilkan Rincian
+                                    </a>
+                                </div>
+
+                                <div class="collapse mt-3" id="collapseProbabilities">
+                                    <div class="d-flex flex-column gap-3">
+                                        {% for class_name, class_confidence in other_predictions %}
+                                        <div class="probability-item">
+                                            <div class="d-flex justify-content-between mb-1">
+                                                <span class="fw-medium small">{{ class_name }}</span>
+                                                <span class="fw-bold text-muted small">{{ class_confidence }}%</span>
+                                            </div>
+                                            <div class="progress" style="height: 8px;" role="progressbar">
+                                                <div class="progress-bar bg-secondary opacity-75 probability-bar" data-confidence="{{ class_confidence }}"></div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <div class="card-footer bg-transparent p-4">
+                <div class="d-grid">
+                    <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary btn-lg">
+                        Coba Gambar Lain
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/result-animation.js') }}"></script>
+{% endblock %}

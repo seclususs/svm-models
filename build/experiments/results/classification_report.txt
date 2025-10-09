@@ -1,0 +1,13 @@
+Akurasi Keseluruhan: 0.8917
+
+Laporan Klasifikasi:
+                        precision    recall  f1-score   support
+
+      Berawan (Cloudy)       0.84      0.90      0.87        60
+          Hujan (Rain)       0.84      0.98      0.91        60
+Cerah (Sunrise, Shiny)       0.92      0.78      0.85        60
+      Berkabut (Foggy)       0.98      0.90      0.94        60
+
+              accuracy                           0.89       240
+             macro avg       0.90      0.89      0.89       240
+          weighted avg       0.90      0.89      0.89       240

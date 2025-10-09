@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Klasifikasi Cuaca{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-bs-theme', theme);
+        })();
+    </script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('main.index') }}">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary">
+                    <path d="M4.95251 14.7315C3.13851 15.2215 2 16.7575 2 18.5005C2 20.4335 3.567 22.0005 5.5 22.0005H18.5C20.433 22.0005 22 20.4335 22 18.5005C22 16.7575 20.8615 15.2215 19.0475 14.7315M15.5 12.5005C16.328 12.5005 17 11.8285 17 11.0005C17 10.1725 16.328 9.50049 15.5 9.50049C14.672 9.50049 14 10.1725 14 11.0005C14 11.8285 14.672 12.5005 15.5 12.5005Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10"/>
+                    <path opacity="0.4" d="M11.5 2.5C13.985 2.5 16 4.515 16 7C16 9.485 13.985 11.5 11.5 11.5C9.015 11.5 7 9.485 7 7C7 4.515 9.015 2.5 11.5 2.5Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10"/>
+                </svg>
+                <span>Klasifikasi Cuaca</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}" href="{{ url_for('main.index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'main.batch' %}active{% endif %}" href="{{ url_for('main.batch') }}">Batch</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'main.performance' %}active{% endif %}" href="{{ url_for('main.performance') }}">Performance</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="container my-5 flex-grow-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

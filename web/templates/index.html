@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Halaman Utama - Klasifikasi Cuaca{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 text-center">
+        <h1 class="display-4 fw-bold">Analisis Cuaca</h1>
+        <p class="lead text-muted mb-4">Unggah sebuah gambar untuk mendapatkan analisis cuaca.</p>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div id="upload-card" class="card mt-4 shadow-lg">
+            <div class="card-body p-4 p-md-5">
+                <form id="prediction-form" action="{{ url_for('predict.predict') }}" method="post" enctype="multipart/form-data">
+                    <div class="file-drop-area">
+                        <svg class="file-drop-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path opacity="0.4" d="M12 16L12 8M12 8L15 11M12 8L9 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <p class="file-drop-text"><strong>Seret & Lepas</strong> gambar di sini, atau <strong>klik untuk memilih</strong>.</p>
+                        <input class="file-input" type="file" id="file" name="file" accept="image/png, image/jpeg, image/jpg" required>
+                        <div id="file-name-preview" class="form-text mt-3"></div>
+                    </div>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Analisis Cuaca
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="loading-spinner" class="text-center mt-5" style="display: none;">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="lead mt-3">Menganalisis gambar, mohon tunggu...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/main-upload.js') }}"></script>
+{% endblock %}

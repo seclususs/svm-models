@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Visualisasi Model - Klasifikasi Cuaca{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold">Performa Model</h1>
+            <p class="lead text-muted">Hasil Pelatihan</p>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-6">
+                <div class="card h-100 text-center shadow-sm border-0">
+                    <div class="card-body p-4 d-flex flex-column justify-content-center">
+                        <h5 class="card-title text-muted">Skor Cross-Validation Terbaik</h5>
+                        <p class="card-text display-4 fw-bold text-primary mb-0">84.77%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 text-center shadow-sm border-0">
+                    <div class="card-body p-4 d-flex flex-column justify-content-center">
+                        <h5 class="card-title text-muted">Akurasi Uji Akhir</h5>
+                        <p class="card-text display-4 fw-bold text-success mb-0">89.17%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-transparent py-3">
+                <h4 class="mb-0">Metrik Laporan Klasifikasi</h4>
+            </div>
+            <div class="card-body p-4">
+                <div style="height: 400px;">
+                    <canvas id="classificationChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-transparent py-3">
+                <h4 class="mb-0">Confusion Matrix</h4>
+            </div>
+            <div class="card-body p-4 text-center">
+                <img src="{{ url_for('static', filename='images/confusion_matrix.png') }}" alt="Confusion Matrix" class="img-fluid rounded shadow-sm" style="max-width: 600px; height: auto;">
+            </div>
+        </div>
+
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-transparent py-3">
+                <h4 class="mb-0">Kurva ROC</h4>
+            </div>
+            <div class="card-body p-4 text-center">
+                <img src="{{ url_for('static', filename='images/roc_curve.png') }}" alt="ROC Curve" class="img-fluid rounded shadow-sm" style="max-width: 600px; height: auto;">
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-transparent py-3">
+                <h4 class="mb-0">Kurva Precision-Recall</h4>
+            </div>
+            <div class="card-body p-4 text-center">
+                <img src="{{ url_for('static', filename='images/precision_recall_curve.png') }}" alt="Precision-Recall Curve" class="img-fluid rounded shadow-sm" style="max-width: 600px; height: auto;">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/performance-chart.js') }}"></script>
+{% endblock %}
