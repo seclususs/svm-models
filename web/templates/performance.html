@@ -15,7 +15,7 @@
                 <div class="card h-100 text-center shadow-sm border-0">
                     <div class="card-body p-4 d-flex flex-column justify-content-center">
                         <h5 class="card-title text-muted">Skor Cross-Validation Terbaik</h5>
-                        <p class="card-text display-4 fw-bold text-primary mb-0">84.77%</p>
+                        <p class="card-text display-4 fw-bold text-primary mb-0">83.27%</p>
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
                 <div class="card h-100 text-center shadow-sm border-0">
                     <div class="card-body p-4 d-flex flex-column justify-content-center">
                         <h5 class="card-title text-muted">Akurasi Uji Akhir</h5>
-                        <p class="card-text display-4 fw-bold text-success mb-0">89.17%</p>
+                        <p class="card-text display-4 fw-bold text-success mb-0">90.42%</p>
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                 <h4 class="mb-0">Metrik Laporan Klasifikasi</h4>
             </div>
             <div class="card-body p-4">
-                <div style="height: 400px;">
+                <div class="chart-container">
                     <canvas id="classificationChart"></canvas>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                 <h4 class="mb-0">Confusion Matrix</h4>
             </div>
             <div class="card-body p-4 text-center">
-                <img src="{{ url_for('static', filename='images/confusion_matrix.png') }}" alt="Confusion Matrix" class="img-fluid rounded shadow-sm" style="max-width: 600px; height: auto;">
+                <img src="{{ url_for('static', filename='images/confusion_matrix.png') }}" alt="Confusion Matrix" class="img-fluid rounded shadow-sm performance-chart-img">
             </div>
         </div>
 
@@ -54,7 +54,7 @@
                 <h4 class="mb-0">Kurva ROC</h4>
             </div>
             <div class="card-body p-4 text-center">
-                <img src="{{ url_for('static', filename='images/roc_curve.png') }}" alt="ROC Curve" class="img-fluid rounded shadow-sm" style="max-width: 600px; height: auto;">
+                <img src="{{ url_for('static', filename='images/roc_curve.png') }}" alt="ROC Curve" class="img-fluid rounded shadow-sm performance-chart-img">
             </div>
         </div>
 
@@ -63,7 +63,7 @@
                 <h4 class="mb-0">Kurva Precision-Recall</h4>
             </div>
             <div class="card-body p-4 text-center">
-                <img src="{{ url_for('static', filename='images/precision_recall_curve.png') }}" alt="Precision-Recall Curve" class="img-fluid rounded shadow-sm" style="max-width: 600px; height: auto;">
+                <img src="{{ url_for('static', filename='images/precision_recall_curve.png') }}" alt="Precision-Recall Curve" class="img-fluid rounded shadow-sm performance-chart-img">
             </div>
         </div>
     </div>

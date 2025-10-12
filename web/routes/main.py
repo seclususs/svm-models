@@ -16,3 +16,8 @@ def performance():
 def batch():
     """Menampilkan halaman untuk unggah gambar massal (batch)."""
     return render_template('batch.html')
+
+@main_bp.route('/live')
+def live():
+    """Menampilkan halaman deteksi langsung dari kamera."""
+    return render_template('live.html')

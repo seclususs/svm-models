@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const reportData = {
-        labels: ['Berawan (Cloudy)', 'Hujan (Rain)', 'Cerah (Sunrise, Shiny)', 'Berkabut (Foggy)'],
-        precision: [0.84, 0.84, 0.92, 0.98],
-        recall: [0.90, 0.98, 0.78, 0.90],
-        f1_score: [0.87, 0.91, 0.85, 0.94]
+        labels: ['Berawan', 'Hujan', 'Cerah', 'Berkabut'],
+        precision: [0.86, 0.85, 0.94, 0.98],
+        recall: [0.93, 0.95, 0.83, 0.90],
+        f1_score: [0.90, 0.90, 0.88, 0.94]
     };
 
     const ctx = document.getElementById('classificationChart');

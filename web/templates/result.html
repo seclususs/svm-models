@@ -9,13 +9,13 @@
 
         <div class="card text-start shadow-lg">
             <div class="card-body p-4 p-md-5">
-                <div class="row align-items-center g-4 g-lg-5">
+                <div class="row align-items-center g-4 g-lg-5 result-layout-row">
                     <!-- Kolom Gambar -->
-                    <div class="col-md-6">
+                    <div class="col-md-6 result-image-col">
                         <img src="{{ url_for('static', filename='uploads/' + filename_thumb) }}" alt="Uploaded Image" class="img-fluid rounded-3 shadow w-100">
                     </div>
                     <!-- Kolom Hasil -->
-                    <div class="col-md-6">
+                    <div class="col-md-6 result-details-col">
                         <div class="text-center text-md-start">
                              <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-3 mb-4">
                                 <img src="{{ url_for('static', filename='icons/' ~ icon_name ~ '.svg') }}" 

@@ -30,41 +30,52 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
             
             const iconElement = resultState.querySelector('.result-icon');
-            iconElement.src = `${iconBaseUrl}${result.icon_name}.svg`;
-            iconElement.onerror = () => { iconElement.src = fallbackIconUrl; };
-            resultState.querySelector('.result-prediction').textContent = result.prediction;
-            resultState.querySelector('.result-confidence').textContent = `${result.confidence}%`;
-
+            const predictionElement = resultState.querySelector('.result-prediction');
+            const confidenceElement = resultState.querySelector('.result-confidence');
             const detailsContainer = cardElement.querySelector('.probability-details-container');
-            detailsContainer.innerHTML = '';
-            if (result.all_confidences && result.all_confidences.length > 0) {
-                result.all_confidences.forEach((prob, index) => {
-                    const [className, classConfidence] = prob;
-                    const isTop = index === 0;
-                    const itemHtml = `
-                        <div class="probability-item">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="fw-medium small ${isTop ? 'fw-bold' : ''}">${className}</span>
-                                <span class="fw-bold text-muted small ${isTop ? 'prediction-text' : ''}">${classConfidence}%</span>
-                            </div>
-                            <div class="progress" style="height: ${isTop ? '12px' : '6px'};" role="progressbar">
-                                <div class="progress-bar probability-bar" style="width: ${classConfidence}%; background-color: ${isTop ? 'var(--primary-500)' : 'var(--gray-400)'};"></div>
-                            </div>
-                        </div>
-                    `;
-                    detailsContainer.insertAdjacentHTML('beforeend', itemHtml);
-                });
-            }
-
-            const collapseEl = cardElement.querySelector('.collapse');
             const toggleBtn = cardElement.querySelector('[data-bs-toggle="collapse"]');
-            if (collapseEl && toggleBtn) {
-                collapseEl.addEventListener('show.bs.collapse', () => {
-                    toggleBtn.textContent = 'Sembunyikan Rincian';
-                });
-                collapseEl.addEventListener('hide.bs.collapse', () => {
-                    toggleBtn.textContent = 'Tampilkan Rincian';
-                });
+
+            if (result.is_anomaly) {
+                // Tangani kasus anomali (gambar ditolak)
+                iconElement.src = `${iconBaseUrl}default.svg`;
+                predictionElement.textContent = result.prediction;
+                predictionElement.classList.add('text-danger');
+                confidenceElement.innerHTML = `Tidak terdeteksi sebagai citra cuaca.`;
+                if(detailsContainer) detailsContainer.innerHTML = '';
+                if(toggleBtn) toggleBtn.style.display = 'none';
+            } else {
+                // Proses normal
+                predictionElement.classList.remove('text-danger');
+                iconElement.src = `${iconBaseUrl}${result.icon_name}.svg`;
+                iconElement.onerror = () => { iconElement.src = fallbackIconUrl; };
+                predictionElement.textContent = result.prediction;
+                confidenceElement.textContent = `Keyakinan: ${result.confidence}%`;
+
+                if(detailsContainer) detailsContainer.innerHTML = '';
+                if (result.all_confidences && result.all_confidences.length > 0) {
+                    result.all_confidences.forEach((prob, index) => {
+                        const [className, classConfidence] = prob;
+                        const isTop = index === 0;
+                        const itemHtml = `
+                            <div class="probability-item">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-medium small ${isTop ? 'fw-bold' : ''}">${className}</span>
+                                    <span class="fw-bold text-muted small ${isTop ? 'prediction-text' : ''}">${classConfidence}%</span>
+                                </div>
+                                <div class="progress" style="height: ${isTop ? '12px' : '6px'};" role="progressbar">
+                                    <div class="progress-bar probability-bar" style="width: ${classConfidence}%; background-color: ${isTop ? 'var(--primary-500)' : 'var(--gray-400)'};"></div>
+                                </div>
+                            </div>
+                        `;
+                        detailsContainer.insertAdjacentHTML('beforeend', itemHtml);
+                    });
+                }
+
+                if (collapseEl && toggleBtn) {
+                    const collapseEl = cardElement.querySelector('.collapse');
+                    collapseEl.addEventListener('show.bs.collapse', () => toggleBtn.textContent = 'Sembunyikan Rincian');
+                    collapseEl.addEventListener('hide.bs.collapse', () => toggleBtn.textContent = 'Tampilkan Rincian');
+                }
             }
 
         } catch (error) {

@@ -203,8 +203,9 @@ html[data-bs-theme="dark"] #file-name-preview {
     color: var(--gray-200);
 }
 
-/* RESULT PAGE STYLES
+/* PAGE SPECIFIC STYLES
 ---------------------------------------------- */
+/* Result Page */
 .weather-icon {
     width: 96px;
     height: 96px;
@@ -215,37 +216,132 @@ html[data-bs-theme="dark"] #file-name-preview {
 .probability-bar {
     transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1);
 }
-
-.progress {
-    border-radius: 0.5rem;
-}
 .progress, .progress-bar {
     background-color: var(--border-color);
 }
-.progress-bar {
+.progress-bar, .progress {
     border-radius: 0.5rem;
 }
-
 #top-progress-bar.bg-success { background-color: var(--success-500) !important; }
 #top-progress-bar.bg-primary { background-color: var(--primary-500) !important; }
 #top-progress-bar.bg-warning { background-color: var(--warning-500) !important; }
 
-/* MOBILE
+/* Live Page */
+.camera-view {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--gray-900);
+    border-radius: 1rem;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+}
+.camera-view video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Performance Page */
+.chart-container {
+    position: relative;
+    height: 400px;
+}
+
+.performance-chart-img {
+    width: 100%; /* Memastikan gambar mengisi kontainer */
+    max-width: 600px; /* Batas lebar maksimum di layar besar */
+    height: auto; /* Menjaga rasio aspek */
+}
+
+/* Batch Result Page */
+.batch-result-img {
+    height: 200px;
+    object-fit: cover;
+}
+
+
+/* RESPONSIVE STYLES
 ------------------------------------------------- */
 
-/* FONT */
-@media (max-width: 576px) {
+/* Tablet and smaller devices */
+@media (max-width: 768px) {
+    main.container, .container-fluid {
+        margin-top: 2rem !important;
+        margin-bottom: 2rem !important;
+    }
+
     .display-4, .display-5 {
-        font-size: 2.4rem;
+        font-size: 2.5rem;
+    }
+
+    .card .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .file-drop-area {
+        padding: 2rem;
+    }
+
+    .camera-view {
+        aspect-ratio: 4 / 3;
+    }
+
+    /* Result page mobile layout */
+    .result-image-col { order: 2; }
+    .result-details-col { order: 1; margin-bottom: 1.5rem; }
+
+    /* Performance page */
+    .chart-container { height: 350px; }
+    .card-text.display-4 { font-size: 3rem; }
+
+    /* Batch result */
+    .batch-result-img { height: 180px; }
+}
+
+/* Mobile devices */
+@media (max-width: 576px) {
+    .navbar-brand span {
+        display: none;
+    }
+
+    .display-4, .display-5 {
+        font-size: 2.2rem;
         line-height: 1.2;
     }
+    
     .weather-icon {
         width: 72px;
         height: 72px;
     }
+
+    .btn-lg {
+        padding: 0.7rem 1.4rem;
+        font-size: 1rem;
+    }
+    
+    .file-drop-area {
+        padding: 1.5rem;
+    }
+    
+    .camera-view {
+        aspect-ratio: 9 / 16;
+    }
+
+    /* Performance page */
+    .chart-container { height: 300px; }
+    .card-text.display-4 { font-size: 2.5rem; }
+
+    /* Batch result */
+    .batch-result-img { height: 150px; }
 }
 
-/* TOUCH TARGET */
+/* TOUCH TARGETS */
 .details-toggle-link {
     display: inline-block;
     padding: 0.5rem;

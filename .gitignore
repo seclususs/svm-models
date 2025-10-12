@@ -1,5 +1,6 @@
 build/data/raw/
 build/data/processed/
+build/data/anomaly/
 build/saved_models/
 build/experiments/logs/
 web/model/

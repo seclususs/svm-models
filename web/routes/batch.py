@@ -4,7 +4,9 @@ import numpy as np
 from PIL import Image
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from werkzeug.utils import secure_filename
-from utils.prediction_logic import get_human_readable_prediction
+
+from utils.model_wrapper import preprocess_image_for_feature_extraction, extract_features
+from utils.prediction_logic import smart_predict
 
 batch_bp = Blueprint('batch', __name__)
 
@@ -55,6 +57,7 @@ def upload_batch():
 def process_image():
     """API endpoint untuk memproses satu gambar dari batch secara asynchronous."""
     model = current_app.model
+    anomaly_detector = current_app.anomaly_detector
     classes = current_app.CLASSES
     upload_folder = current_app.config['UPLOAD_FOLDER']
 
@@ -62,7 +65,7 @@ def process_image():
     batch_id = data.get('batch_id')
     filename = data.get('filename')
 
-    if not all([batch_id, filename, model]):
+    if not all([batch_id, filename, model, anomaly_detector]):
         return jsonify({'error': 'Parameter tidak valid atau model tidak dimuat'}), 400
         
     filepath = os.path.join(upload_folder, batch_id, filename)
@@ -73,13 +76,27 @@ def process_image():
         image = Image.open(filepath).convert('RGB')
         image_np = np.array(image)
         
+        # Deteksi Anomali
+        gray_img, color_img = preprocess_image_for_feature_extraction(image_np)
+        features = extract_features(gray_img, color_img)
+        is_anomaly = anomaly_detector.predict(features.reshape(1, -1))
+        
+        if is_anomaly[0] == -1:
+            return jsonify({
+                'prediction': 'Gambar Ditolak',
+                'icon_name': 'default',
+                'confidence': 100,
+                'all_confidences': [('Bukan citra cuaca', 100)],
+                'is_anomaly': True
+            })
+
         confidence_scores = model.predict_proba([image_np])[0]
         all_confidences = sorted(
             [(classes[i], round(score * 100, 2)) for i, score in enumerate(confidence_scores)],
             key=lambda item: item[1],
             reverse=True
         )
-        prediction, icon_name, _ = get_human_readable_prediction(all_confidences)
+        prediction, icon_name, _ = smart_predict(all_confidences)
         
         return jsonify({
             'prediction': prediction,

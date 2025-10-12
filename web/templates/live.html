@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Deteksi Langsung - Klasifikasi Cuaca{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 text-center">
+        <div class="camera-view shadow-lg">
+            <div id="status-overlay" class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-dark bg-opacity-75 text-white p-3 z-2">
+                <div id="status-spinner" class="spinner-border mb-3" role="status" style="display: none;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p id="status-message" class="text-center"></p>
+                <button id="start-camera-btn" class="btn btn-primary btn-lg mt-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera-video-fill me-2" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.11-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2V5z"/>
+                    </svg>
+                    Mulai Kamera
+                </button>
+            </div>
+
+            <video id="video" data-predict-url="{{ url_for('live.predict_frame') }}" playsinline autoplay muted style="display: none;"></video>
+            <canvas id="canvas" style="display: none;"></canvas>
+            
+            <div id="prediction-overlay" class="position-absolute top-0 start-0 p-3 bg-dark bg-opacity-50 rounded-bottom-end text-white z-1" style="display: none;">
+                <h5 id="prediction-text" class="mb-0 fw-bold"></h5>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/live-camera.js') }}"></script>
+{% endblock %}
