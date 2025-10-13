@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const initializeCamera = async () => {
         startCameraButton.style.display = 'none';
-        statusMessage.textContent = 'Meminta izin kamera...';
-        statusSpinner.style.display = 'block';
         
         // Akses kamera pada mobile browser modern WAJIB menggunakan koneksi aman (HTTPS).
         if (!window.isSecureContext) {

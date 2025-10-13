@@ -34,13 +34,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const confidenceElement = resultState.querySelector('.result-confidence');
             const detailsContainer = cardElement.querySelector('.probability-details-container');
             const toggleBtn = cardElement.querySelector('[data-bs-toggle="collapse"]');
+            const collapseEl = cardElement.querySelector('.collapse');
+            const confidenceWrapper = confidenceElement ? confidenceElement.parentElement : null;
 
             if (result.is_anomaly) {
-                // Tangani kasus anomali (gambar ditolak)
+                // Menangani kasus anomali (gambar ditolak)
                 iconElement.src = `${iconBaseUrl}default.svg`;
                 predictionElement.textContent = result.prediction;
                 predictionElement.classList.add('text-danger');
-                confidenceElement.innerHTML = `Tidak terdeteksi sebagai citra cuaca.`;
+                if (confidenceWrapper) {
+                    confidenceWrapper.innerHTML = `<span class="fw-medium">Tidak terdeteksi.</span>`;
+                    confidenceWrapper.classList.remove('text-muted');
+                }
                 if(detailsContainer) detailsContainer.innerHTML = '';
                 if(toggleBtn) toggleBtn.style.display = 'none';
             } else {
@@ -49,7 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 iconElement.src = `${iconBaseUrl}${result.icon_name}.svg`;
                 iconElement.onerror = () => { iconElement.src = fallbackIconUrl; };
                 predictionElement.textContent = result.prediction;
-                confidenceElement.textContent = `Keyakinan: ${result.confidence}%`;
+                
+                if (confidenceElement) confidenceElement.textContent = `${result.confidence}%`;
 
                 if(detailsContainer) detailsContainer.innerHTML = '';
                 if (result.all_confidences && result.all_confidences.length > 0) {
@@ -70,9 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         detailsContainer.insertAdjacentHTML('beforeend', itemHtml);
                     });
                 }
-
+                
                 if (collapseEl && toggleBtn) {
-                    const collapseEl = cardElement.querySelector('.collapse');
                     collapseEl.addEventListener('show.bs.collapse', () => toggleBtn.textContent = 'Sembunyikan Rincian');
                     collapseEl.addEventListener('hide.bs.collapse', () => toggleBtn.textContent = 'Tampilkan Rincian');
                 }
@@ -80,8 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error(`Gagal memproses ${file.unique_filename}:`, error);
-            resultState.querySelector('.result-prediction').textContent = 'Error';
-            resultState.querySelector('.result-confidence').textContent = 'N/A';
+            const predictionElement = resultState.querySelector('.result-prediction');
+            const confidenceElement = resultState.querySelector('.result-confidence');
+
+            if (predictionElement) predictionElement.textContent = 'Error';
+            if (confidenceElement) confidenceElement.textContent = 'N/A';
         } finally {
             if(processingState) processingState.style.display = 'none';
             if(resultState) resultState.style.display = 'block';

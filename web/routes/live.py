@@ -47,7 +47,7 @@ def predict_frame():
         
         if is_anomaly[0] == -1:
             return jsonify({
-                'prediction': 'Bukan Citra Cuaca',
+                'prediction': 'Tidak Terdeteksi',
                 'confidence': 100,
                 'is_anomaly': True
             })

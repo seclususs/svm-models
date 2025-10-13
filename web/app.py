@@ -5,7 +5,6 @@ from flask import Flask
 from utils.model_wrapper import IntegratedClassifier
 from routes.main import main_bp
 from routes.predict import predict_bp
-from routes.batch import batch_bp
 from routes.live import live_bp
 
 def create_app():
@@ -38,7 +37,6 @@ def create_app():
     app.ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
     app.register_blueprint(main_bp)
     app.register_blueprint(predict_bp)
-    app.register_blueprint(batch_bp)
     app.register_blueprint(live_bp)
 
     return app

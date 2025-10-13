@@ -38,9 +38,6 @@
                         <a class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}" href="{{ url_for('main.index') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'main.batch' %}active{% endif %}" href="{{ url_for('main.batch') }}">Batch</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link {% if request.endpoint == 'main.live' %}active{% endif %}" href="{{ url_for('main.live') }}">Live</a>
                     </li>
                     <li class="nav-item">

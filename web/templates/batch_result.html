@@ -13,7 +13,7 @@
          class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
          data-batch-id="{{ batch_id }}"
          data-files='{{ files|tojson|safe }}'
-         data-process-url="{{ url_for('batch.process_image') }}"
+         data-process-url="{{ url_for('predict.process_image') }}"
          data-icon-base-url="{{ url_for('static', filename='icons/') }}">
 
         {% for file in files %}
@@ -58,8 +58,8 @@
     </div>
 
     <div class="text-center mt-5">
-        <a href="{{ url_for('main.batch') }}" class="btn btn-outline-primary btn-lg">
-             Unggah Batch Lain
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary btn-lg">
+             Unggah Gambar Lain
         </a>
     </div>
 </div>
