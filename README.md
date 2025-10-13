@@ -244,15 +244,15 @@ hist /= (hist.sum() + 1e-6) # Normalisasi
 ```
 
 #### Fitur Warna: Color Histograms & Color Moments
-![Color Histogram](docs/images/processing/gambar-color-histogram.png)
 - **Histogram Warna (HSV)**:
+![Color Histogram](docs/images/processing/gambar-color-histogram.png)
   - Daripada menggunakan RGB yang sangat berkorelasi dengan pencahayaan, kita menggunakan HSV.
     - **Hue (H)**: Warna murni (merah, hijau, biru).
     - **Saturation (S)**: Intensitas/kemurnian warna.
     - **Value (V)**: Kecerahan warna.
   - Histogram 3D (H, S, V) dihitung dan kemudian diratakan menjadi vektor 1D. Ini menangkap distribusi warna dominan dalam gambar.
-![Color Moments](docs/images/processing/gambar-color-moments.png)
 - **Momen Warna (Lab)**:
+![Color Moments](docs/images/processing/gambar-color-moments.png)
   - Ruang warna Lab dirancang agar lebih sesuai dengan persepsi visual manusia.
     - **L***: Lightness (Kecerahan).
     - **a***: Sumbu hijau ke merah.
@@ -264,8 +264,8 @@ hist /= (hist.sum() + 1e-6) # Normalisasi
   - Ini menghasilkan vektor 9-dimensi yang ringkas namun informatif.
 
 #### Fitur Tekstur Lanjut: GLCM & Gabor Filters
-![GLCM](docs/images/processing/gambar-glcm.png)
 - **Gray-Level Co-occurrence Matrix (GLCM)**:
+![GLCM](docs/images/processing/gambar-glcm.png)
   - Menganalisis hubungan spasial antar piksel. GLCM adalah matriks yang menghitung seberapa sering pasangan piksel dengan nilai intensitas tertentu muncul dalam gambar pada jarak dan sudut tertentu.
   - Dari matriks ini, properti statistik diekstraksi:
     - **Contrast**: Ukuran variasi lokal.
@@ -273,8 +273,8 @@ hist /= (hist.sum() + 1e-6) # Normalisasi
     - **Homogeneity**: Seberapa dekat distribusi elemen ke diagonal GLCM.
     - **Energy/ASM**: Jumlah kuadrat elemen, mengukur keseragaman.
     - **Correlation**: Ukuran korelasi linear antar piksel.
-![Filter Gabor](docs/images/processing/gambar-gabor-filters.png)
 - **Filter Gabor**:
+![Filter Gabor](docs/images/processing/gambar-gabor-filters.png)
   - Ini adalah bank filter linear yang responsnya terhadap gambar memberikan informasi tentang keberadaan frekuensi dan orientasi tertentu.
   - Dengan menerapkan serangkaian filter Gabor dengan orientasi dan frekuensi yang berbeda, kita dapat membuat sidik jari tekstur yang kaya untuk gambar tersebut.
 
@@ -470,5 +470,31 @@ Secara keseluruhan, sistem menunjukkan performa yang sangat kuat dan andal untuk
 - **Eksplorasi Deep Learning**: Mengimplementasikan Convolutional Neural Network (CNN) menggunakan transfer learning (misalnya, dari ResNet50 atau EfficientNetB0). Ini akan menghilangkan kebutuhan akan rekayasa fitur manual dan berpotensi menangkap pola yang lebih abstrak dan robust.
 - **Klasifikasi yang Lebih Granular**: Menambahkan kelas seperti 'Badai Petir', 'Salju', 'Berangin', dan 'Matahari Terbenam/Terbit' untuk meningkatkan detail klasifikasi.
 - **Hybrid Approach**: Menggabungkan output dari model klasik ini dengan model CNN. Vektor fitur yang direkayasa secara manual dapat digabungkan dengan fitur yang dipelajari oleh CNN sebelum lapisan klasifikasi akhir.
+
+---
+
+## Antarmuka Pengguna
+
+### Desktop
+- **Halaman Utama**
+![Halaman Utama Desktop](docs/images/ui/desktop/halaman-utama.png)
+- **Halaman Hasil Tunggal**
+![Halaman Hasil Tunggal Desktop](docs/images/ui/desktop/halaman-hasil-tunggal.png)
+- **Halaman Hasil Massal**
+![Halaman Hasil Massal Desktop](docs/images/ui/desktop/halaman-hasil-massal.png)
+- **Halaman Kamera Real-Time**
+![Halaman Real Time Desktop](docs/images/ui/desktop/halaman-kamera-real-time.png)
+- **Halaman Hasil Pelatihan Model**
+![Halaman Hasil Pelatihan Model Desktop](docs/images/ui/desktop/halaman-visualisasi-hasil-pelatihan-model.png)
+
+### Mobile
+- **Halaman Utama**
+![Halaman Utama Mobile](docs/images/ui/mobile/halaman-utama-mobile.jpg)
+- **Halaman Hasil**
+![Halaman Hasil Mobile](docs/images/ui/mobile/halaman-hasil-mobile.jpg)
+- **Halaman Kamera Real-Time**
+![Halaman Real Time Mobile](docs/images/ui/mobile/halaman-realtime-mobile.jpg)
+- **Halaman Hasil Pelatihan Model**
+![Halaman Hasil Pelatihan Model Mobile](docs/images/ui/mobile/halaman-hasil-pelatihan-model-mobile.jpg)
 
 ---
