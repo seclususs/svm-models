@@ -1,4 +1,13 @@
+/**
+ * @file live-camera.js
+ * @description Skrip ini mengelola fungsionalitas deteksi cuaca secara langsung
+ * menggunakan kamera perangkat pengguna. Ini mencakup inisialisasi kamera,
+ * pengambilan frame video, pengiriman frame ke server untuk prediksi,
+ * dan menampilkan hasilnya secara real-time.
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Mengambil elemen-elemen DOM yang diperlukan.
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const context = canvas.getContext('2d');
@@ -9,12 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusSpinner = document.getElementById('status-spinner');
     const startCameraButton = document.getElementById('start-camera-btn');
     
-    let modelInterval;
+    let modelInterval; // Variabel untuk menyimpan interval pengiriman frame.
 
+    /**
+     * @function initializeCamera
+     * @description Meminta akses ke kamera pengguna, menampilkannya di elemen video,
+     * dan memulai interval untuk prediksi frame.
+     */
     const initializeCamera = async () => {
         startCameraButton.style.display = 'none';
         
-        // Akses kamera pada mobile browser modern WAJIB menggunakan koneksi aman (HTTPS).
+        // Memeriksa konteks aman (HTTPS), yang wajib untuk akses kamera di browser modern.
         if (!window.isSecureContext) {
             statusSpinner.style.display = 'none';
             statusMessage.innerHTML = '<strong>Akses kamera memerlukan koneksi aman (HTTPS).</strong><br><small>Fitur ini tidak akan berfungsi jika diakses melalui HTTP di perangkat mobile.</small>';
@@ -22,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Memeriksa dukungan API mediaDevices.
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             statusSpinner.style.display = 'none';
             statusMessage.innerHTML = '<strong>Browser tidak mendukung akses kamera.</strong><br><small>Silakan gunakan browser modern seperti Chrome atau Firefox di perangkat Anda.</small>';
@@ -29,12 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        // Bedakan constraints untuk mobile dan desktop
+        // Menentukan jenis kamera (belakang untuk mobile, depan untuk desktop).
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
         const constraints = {
             video: {
-                // Gunakan kamera belakang untuk mobile, kamera depan (webcam) untuk desktop
                 facingMode: isMobile ? 'environment' : 'user', 
                 width: { ideal: 1280 },
                 height: { ideal: 720 }
@@ -45,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
             
+            // Menghentikan stream sebelumnya jika ada.
             if (video.srcObject) {
                 video.srcObject.getTracks().forEach(track => track.stop());
             }
@@ -52,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             video.srcObject = stream;
             video.style.display = 'block';
 
+            // Setelah metadata video dimuat, mulai prediksi.
             video.onloadedmetadata = () => {
                 statusOverlay.style.display = 'none';
                 predictionOverlay.style.display = 'flex';
@@ -60,10 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 canvas.height = video.videoHeight;
                 
                 if (modelInterval) clearInterval(modelInterval);
-                modelInterval = setInterval(predictFrame, 1000);
+                modelInterval = setInterval(predictFrame, 1000); // Kirim frame setiap 1 detik.
             };
             
         } catch (err) {
+            // Menangani berbagai jenis kesalahan yang mungkin terjadi saat mengakses kamera.
             console.error("Error accessing camera:", err);
             statusSpinner.style.display = 'none';
             let errorMessage;
@@ -87,13 +104,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    /**
+     * @function predictFrame
+     * @description Mengambil frame saat ini dari video, mengubahnya menjadi data URL,
+     * dan mengirimkannya ke server untuk mendapatkan prediksi.
+     */
     const predictFrame = async () => {
         if (!video.srcObject || video.paused || video.ended || video.readyState < 2) return;
 
+        // Menggambar frame video ke canvas dan mengubahnya menjadi format JPEG.
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const dataURL = canvas.toDataURL('image/jpeg', 0.8);
 
         try {
+            // Mengirim data gambar ke endpoint prediksi.
             const response = await fetch(video.dataset.predictUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -101,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (response.ok) {
                 const result = await response.json();
+                // Memperbarui UI berdasarkan hasil prediksi (normal atau anomali).
                 if (result.is_anomaly) {
                     predictionText.textContent = `Peringatan: ${result.prediction}`;
                     predictionOverlay.classList.add('bg-danger', 'bg-opacity-75');
@@ -114,11 +139,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 predictionText.textContent = 'Prediksi: Error Server';
             }
         } catch (error) {
+            // Menangani kegagalan koneksi atau prediksi.
             console.error("Prediction failed:", error);
             predictionText.textContent = 'Prediksi: Gagal Terhubung';
-            if (modelInterval) clearInterval(modelInterval);
+            if (modelInterval) clearInterval(modelInterval); // Hentikan prediksi jika gagal terhubung.
         }
     };
     
+    // Menambahkan event listener ke tombol untuk memulai kamera.
     startCameraButton.addEventListener('click', initializeCamera);
 });

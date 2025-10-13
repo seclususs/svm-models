@@ -1,22 +1,30 @@
+<!-- 
+  Halaman ini menampilkan hasil prediksi untuk satu gambar yang diunggah.
+  Halaman ini mewarisi struktur dari 'base.html'.
+-->
 {% extends "base.html" %}
 
+<!-- Mengatur judul halaman secara dinamis berdasarkan hasil prediksi -->
 {% block title %}Hasil Prediksi - {{ prediction }}{% endblock %}
 
+<!-- Konten utama halaman -->
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-10 text-center">
         <h1 class="display-5 fw-bold mb-4">Hasil Analisis Cuaca</h1>
 
+        <!-- Kartu utama untuk menampilkan hasil analisis -->
         <div class="card text-start shadow-lg">
             <div class="card-body p-4 p-md-5">
                 <div class="row align-items-center g-4 g-lg-5 result-layout-row">
-                    <!-- Kolom Gambar -->
+                    <!-- Kolom untuk menampilkan gambar yang diunggah -->
                     <div class="col-md-6 result-image-col">
                         <img src="{{ url_for('static', filename='uploads/' + filename_thumb) }}" alt="Uploaded Image" class="img-fluid rounded-3 shadow w-100">
                     </div>
-                    <!-- Kolom Hasil -->
+                    <!-- Kolom untuk menampilkan rincian hasil prediksi -->
                     <div class="col-md-6 result-details-col">
                         <div class="text-center text-md-start">
+                             <!-- Ikon dan nama cuaca yang diprediksi -->
                              <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-3 mb-4">
                                 <img src="{{ url_for('static', filename='icons/' ~ icon_name ~ '.svg') }}" 
                                      data-fallback-src="{{ url_for('static', filename='icons/default.svg') }}"
@@ -26,17 +34,21 @@
                                <h2 class="display-4 fw-bolder mb-0 prediction-text">{{ prediction }}</h2>
                             </div>
                             
+                            <!-- Deskripsi singkat mengenai cuaca yang diprediksi -->
                             <div class="alert alert-light border-0 bg-light-subtle p-3 rounded-3">
                                 <p class="mb-0">{{ description|safe }}</p>
                             </div>
 
                             <hr class="my-4">
 
+                            <!-- Bagian rincian probabilitas untuk setiap kelas cuaca -->
                             <h5 class="fw-medium mb-3">Rincian Probabilitas</h5>
                             {% if all_confidences %}
+                                <!-- Memisahkan prediksi teratas dari yang lain -->
                                 {% set top_prediction = all_confidences[0] %}
                                 {% set other_predictions = all_confidences[1:] %}
 
+                                <!-- Menampilkan probabilitas prediksi teratas -->
                                 <div class="probability-item top-probability mb-2">
                                     <div class="d-flex justify-content-between mb-1">
                                         <span class="fw-bold">{{ top_prediction[0] }}</span>
@@ -47,12 +59,14 @@
                                     </div>
                                 </div>
 
+                                <!-- Tombol untuk menampilkan/menyembunyikan probabilitas lainnya -->
                                 <div class="text-end mt-2">
                                      <a class="btn btn-sm btn-link text-decoration-none text-muted fw-medium p-0 details-toggle-link" data-bs-toggle="collapse" href="#collapseProbabilities" role="button" aria-expanded="false" id="toggle-details-btn">
                                         Tampilkan Rincian
                                     </a>
                                 </div>
 
+                                <!-- Kontainer yang dapat diciutkan untuk probabilitas lainnya -->
                                 <div class="collapse mt-3" id="collapseProbabilities">
                                     <div class="d-flex flex-column gap-3">
                                         {% for class_name, class_confidence in other_predictions %}
@@ -73,6 +87,7 @@
                     </div>
                 </div>
             </div>
+             <!-- Bagian footer kartu dengan tombol untuk kembali -->
              <div class="card-footer bg-transparent p-4">
                 <div class="d-grid">
                     <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary btn-lg">
@@ -85,6 +100,7 @@
 </div>
 {% endblock %}
 
+<!-- Skrip khusus untuk halaman ini yang menangani animasi bilah kemajuan -->
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/result-animation.js') }}"></script>
 {% endblock %}

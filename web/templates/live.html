@@ -1,16 +1,27 @@
+<!-- 
+  Halaman ini menyediakan fitur deteksi cuaca secara langsung menggunakan kamera perangkat.
+  Halaman ini mewarisi struktur dari 'base.html'.
+-->
 {% extends "base.html" %}
 
+<!-- Mengatur judul halaman -->
 {% block title %}Deteksi Langsung - Klasifikasi Cuaca{% endblock %}
 
+<!-- Konten utama halaman -->
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-12 text-center">
+        <!-- Kontainer utama untuk tampilan kamera -->
         <div class="camera-view shadow-lg">
+            <!-- Lapisan (overlay) untuk menampilkan status, pesan, dan tombol mulai kamera -->
             <div id="status-overlay" class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-dark bg-opacity-75 text-white p-3 z-2">
+                <!-- Indikator pemuatan (spinner) -->
                 <div id="status-spinner" class="spinner-border mb-3" role="status" style="display: none;">
                     <span class="visually-hidden">Loading...</span>
                 </div>
+                <!-- Tempat untuk menampilkan pesan status -->
                 <p id="status-message" class="text-center"></p>
+                <!-- Tombol untuk memulai akses kamera -->
                 <button id="start-camera-btn" class="btn btn-primary btn-lg mt-3">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera-video-fill me-2" viewBox="0 0 16 16">
                       <path fill-rule="evenodd" d="M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.11-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2V5z"/>
@@ -19,9 +30,12 @@
                 </button>
             </div>
 
+            <!-- Elemen video untuk menampilkan umpan kamera -->
             <video id="video" data-predict-url="{{ url_for('live.predict_frame') }}" playsinline autoplay muted style="display: none;"></video>
+            <!-- Elemen canvas yang digunakan untuk mengambil frame dari video untuk dianalisis -->
             <canvas id="canvas" style="display: none;"></canvas>
             
+            <!-- Lapisan untuk menampilkan hasil prediksi secara langsung di atas video -->
             <div id="prediction-overlay" class="position-absolute top-0 start-0 p-3 bg-dark bg-opacity-50 rounded-bottom-end text-white z-1" style="display: none;">
                 <h5 id="prediction-text" class="mb-0 fw-bold"></h5>
             </div>
@@ -30,6 +44,7 @@
 </div>
 {% endblock %}
 
+<!-- Skrip khusus untuk halaman ini yang menangani logika kamera dan prediksi langsung -->
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/live-camera.js') }}"></script>
 {% endblock %}

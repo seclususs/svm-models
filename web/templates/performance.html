@@ -1,15 +1,23 @@
+<!-- 
+  Halaman ini menampilkan visualisasi data mengenai performa model klasifikasi cuaca.
+  Halaman ini mewarisi struktur dari 'base.html'.
+-->
 {% extends "base.html" %}
 
+<!-- Mengatur judul halaman -->
 {% block title %}Visualisasi Model - Klasifikasi Cuaca{% endblock %}
 
+<!-- Konten utama halaman -->
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-10">
+        <!-- Judul dan subjudul halaman -->
         <div class="text-center mb-5">
             <h1 class="display-5 fw-bold">Performa Model</h1>
             <p class="lead text-muted">Hasil Pelatihan</p>
         </div>
 
+        <!-- Kartu yang menampilkan metrik utama performa model -->
         <div class="row g-4 mb-5">
             <div class="col-md-6">
                 <div class="card h-100 text-center shadow-sm border-0">
@@ -29,6 +37,7 @@
             </div>
         </div>
 
+        <!-- Kartu untuk menampilkan grafik laporan klasifikasi -->
         <div class="card mb-4 shadow-sm border-0">
             <div class="card-header bg-transparent py-3">
                 <h4 class="mb-0">Metrik Laporan Klasifikasi</h4>
@@ -40,6 +49,7 @@
             </div>
         </div>
 
+        <!-- Kartu untuk menampilkan gambar Confusion Matrix -->
         <div class="card mb-4 shadow-sm border-0">
             <div class="card-header bg-transparent py-3">
                 <h4 class="mb-0">Confusion Matrix</h4>
@@ -49,6 +59,7 @@
             </div>
         </div>
 
+        <!-- Kartu untuk menampilkan gambar kurva ROC -->
         <div class="card mb-4 shadow-sm border-0">
             <div class="card-header bg-transparent py-3">
                 <h4 class="mb-0">Kurva ROC</h4>
@@ -58,6 +69,7 @@
             </div>
         </div>
 
+        <!-- Kartu untuk menampilkan gambar kurva Precision-Recall -->
         <div class="card shadow-sm border-0">
             <div class="card-header bg-transparent py-3">
                 <h4 class="mb-0">Kurva Precision-Recall</h4>
@@ -70,6 +82,7 @@
 </div>
 {% endblock %}
 
+<!-- Skrip untuk merender grafik menggunakan Chart.js -->
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='js/performance-chart.js') }}"></script>

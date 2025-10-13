@@ -1,14 +1,23 @@
+<!-- 
+  Halaman ini menampilkan hasil prediksi untuk beberapa gambar yang diunggah secara bersamaan (massal).
+  Halaman ini mewarisi struktur dari 'base.html'.
+-->
 {% extends "base.html" %}
 
+<!-- Mengatur judul halaman -->
 {% block title %}Hasil Klasifikasi Massal{% endblock %}
 
+<!-- Konten utama halaman -->
 {% block content %}
 <div class="container-fluid">
+    <!-- Judul dan teks status -->
     <div class="text-center mb-5">
         <h1 class="display-5 fw-bold">Hasil Analisis</h1>
         <p id="status-text" class="lead text-muted">Memproses {{ files|length }} gambar... Hasil akan muncul di bawah ini secara otomatis.</p>
     </div>
     
+    <!-- Grid untuk menampilkan kartu hasil dari setiap gambar -->
+    <!-- Atribut 'data-*' digunakan oleh JavaScript untuk memproses gambar -->
     <div id="result-grid" 
          class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
          data-batch-id="{{ batch_id }}"
@@ -16,12 +25,15 @@
          data-process-url="{{ url_for('predict.process_image') }}"
          data-icon-base-url="{{ url_for('static', filename='icons/') }}">
 
+        <!-- Perulangan untuk membuat kartu placeholder untuk setiap berkas yang diunggah -->
         {% for file in files %}
         <div class="col" id="{{ file.id }}">
             <div class="card h-100 shadow-sm border-0">
+                <!-- Pratinjau gambar yang diunggah -->
                 <img src="{{ url_for('static', filename='uploads/' ~ batch_id ~ '/' ~ file.unique_filename) }}" class="card-img-top batch-result-img" alt="Uploaded Image Preview">
                 
                 <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <!-- Status 'Memproses' yang ditampilkan saat analisis berjalan -->
                     <div class="processing-state">
                         <div class="spinner-border spinner-border-sm text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -29,6 +41,7 @@
                         <p class="card-text text-muted small mt-2 mb-0">Memproses...</p>
                     </div>
 
+                    <!-- Status 'Hasil' yang ditampilkan setelah analisis selesai -->
                     <div class="result-state" style="display: none;">
                         <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
                              <img src="" class="result-icon" alt="icon" style="width: 32px; height: 32px;">
@@ -36,19 +49,23 @@
                         </div>
                         <p class="card-text text-muted small">Keyakinan: <strong class="result-confidence"></strong></p>
                         
+                        <!-- Tombol untuk menampilkan/menyembunyikan rincian probabilitas -->
                         <div class="text-end mt-2">
                              <a class="btn btn-sm btn-link text-decoration-none text-muted fw-medium p-0" data-bs-toggle="collapse" href="#collapse-{{ file.id }}" role="button" aria-expanded="false">
                                 Tampilkan Rincian
                             </a>
                         </div>
 
+                        <!-- Kontainer yang dapat diciutkan untuk rincian probabilitas -->
                         <div class="collapse mt-3 text-start" id="collapse-{{ file.id }}">
                             <div class="probability-details-container d-flex flex-column gap-3">
+                                <!-- Rincian probabilitas akan dimasukkan di sini oleh JavaScript -->
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Bagian footer kartu yang menampilkan nama berkas asli -->
                 <div class="card-footer bg-transparent text-center">
                      <small class="text-muted fst-italic">{{ file.unique_filename }}</small>
                 </div>
@@ -57,6 +74,7 @@
         {% endfor %}
     </div>
 
+    <!-- Tombol untuk kembali ke halaman utama -->
     <div class="text-center mt-5">
         <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary btn-lg">
              Unggah Gambar Lain
@@ -65,6 +83,7 @@
 </div>
 {% endblock %}
 
+<!-- Skrip khusus untuk halaman ini yang menangani pemrosesan hasil massal -->
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/batch-result-processor.js') }}"></script>
 {% endblock %}

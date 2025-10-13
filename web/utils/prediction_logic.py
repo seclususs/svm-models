@@ -1,14 +1,37 @@
+"""
+Modul untuk logika interpretasi hasil prediksi model.
+
+Fungsi-fungsi dalam modul ini tidak hanya mengambil kelas dengan probabilitas
+tertinggi, tetapi juga menganalisis distribusi probabilitas secara keseluruhan
+untuk memberikan prediksi yang lebih kontekstual dan informatif. Ini termasuk
+penggunaan entropi untuk mengukur ketidakpastian dan aturan berbasis domain
+untuk mengidentifikasi kondisi cuaca campuran.
+"""
+
 import re
 import numpy as np
 
 def sanitize_for_filename(text):
-    """Membuat nama file yang aman dari teks prediksi untuk mencocokkan dengan ikon."""
+    """
+    Membersihkan dan mengubah teks prediksi menjadi nama berkas yang aman.
+
+    Fungsi ini mengubah teks menjadi huruf kecil, mengganti spasi dengan garis bawah,
+    dan menggunakan pemetaan khusus untuk kondisi cuaca yang kompleks. Tujuannya
+    adalah untuk menghasilkan nama yang dapat digunakan untuk mencocokkan dengan
+    nama berkas ikon (misalnya, 'Cerah Berawan' -> 'cerah_berawan.svg').
+
+    Args:
+        text (str): Teks prediksi mentah (misalnya, "Cerah Berawan").
+
+    Returns:
+        str: Nama berkas yang telah dibersihkan.
+    """
     if not isinstance(text, str):
         return "default"
     
     s = text.lower()
 
-    # Pemetaan spesifik untuk kondisi cuaca gabungan
+    # Pemetaan spesifik untuk mengubah frasa menjadi nama berkas ikon.
     weather_map = {
         "cerah berawan": "cerah_berawan",
         "berawan dan berkabut": "berawan_berkabut",
@@ -17,30 +40,53 @@ def sanitize_for_filename(text):
         "hujan berkabut": "hujan_berkabut",
         "hujan disertai kabut": "hujan_berkabut",
         "hujan cerah": "hujan_cerah",
-        "cuaca campuran": "default" # Ikon untuk cuaca tidak pasti
+        "cuaca campuran": "default" # Ikon cadangan untuk kondisi tidak pasti.
     }
     for key, value in weather_map.items():
         if key in s:
             return value
     
-    # Fallback ke kata pertama jika tidak ada pemetaan yang cocok
+    # Jika tidak ada pemetaan yang cocok, gunakan kata pertama dari teks.
     s = re.split(r'[\s(]', s)[0]
     return s
 
 def smart_predict(confidences):
     """
-    Menganalisis seluruh distribusi probabilitas untuk menghasilkan kesimpulan
-    cuaca yang objektif dan informatif menggunakan entropi dan aturan domain.
+    Menganalisis distribusi probabilitas untuk menghasilkan prediksi yang cerdas.
+
+    Fungsi ini menerapkan beberapa lapisan logika:
+    1.  Menghitung entropi Shannon untuk mengukur ketidakpastian prediksi. Jika entropi tinggi,
+        hasilnya diklasifikasikan sebagai "Cuaca Campuran".
+    2.  Jika satu kelas memiliki probabilitas yang sangat dominan (>= 75%), kelas tersebut
+        langsung dipilih sebagai hasil akhir.
+    3.  Menerapkan serangkaian aturan berbasis domain untuk mengidentifikasi kondisi cuaca
+        kompleks seperti "Mendung", "Cerah Berawan", atau "Hujan Cerah" dengan
+        menganalisis tiga kelas teratas.
+    4.  Jika tidak ada aturan di atas yang terpenuhi, fungsi akan kembali ke prediksi standar
+        berdasarkan kelas dengan probabilitas tertinggi.
+
+    Args:
+        confidences (list of tuple): Daftar tuple, di mana setiap tuple berisi
+                                     nama kelas dan skor kepercayaannya (0-100).
+                                     Daftar ini diasumsikan sudah diurutkan dari
+                                     kepercayaan tertinggi ke terendah.
+
+    Returns:
+        tuple: Sebuah tuple berisi tiga elemen:
+               - prediction_name (str): Nama prediksi yang ramah pengguna.
+               - icon_base_name (str): Nama dasar untuk berkas ikon.
+               - description (str): Deskripsi HTML yang menjelaskan hasil prediksi.
     """
     if not confidences:
         return "Tidak Diketahui", "default", "Data probabilitas tidak tersedia."
 
     # 1. Kalkulasi Entropi untuk mengukur ketidakpastian
     probs = np.array([p for _, p in confidences]) / 100.0
-    probs[probs == 0] = 1e-9  # Menghindari log(0)
+    probs[probs == 0] = 1e-9  # Menghindari galat log(0) dengan nilai kecil.
     entropy = -np.sum(probs * np.log2(probs))
     
-    # Entropi maksimal untuk 4 kelas adalah 2.0. Di atas 1.6 dianggap sangat tidak pasti.
+    # Entropi maksimal untuk 4 kelas adalah 2.0. Nilai di atas ambang batas ini
+    # dianggap sangat tidak pasti.
     ENTROPY_THRESHOLD = 1.6 
 
     prob_map = dict(confidences)
@@ -51,14 +97,14 @@ def smart_predict(confidences):
     # 2. Kasus Entropi Tinggi / Ketidakpastian Tinggi
     if entropy > ENTROPY_THRESHOLD:
         prediction_name = "Cuaca Campuran"
-        icon_base_name = top_class  # Gunakan ikon kelas teratas sebagai fallback
+        icon_base_name = top_class  # Gunakan ikon kelas teratas sebagai cadangan.
         description = (f"Kondisi cuaca sangat tidak pasti dan menunjukkan campuran dari beberapa elemen. "
                        f"Prediksi teratas adalah <strong>{top_class}</strong> ({top_prob}%), "
                        f"namun <strong>{second_class}</strong> ({second_prob}%) juga memiliki probabilitas signifikan. "
                        f"Entropi distribusi ({entropy:.2f}) yang tinggi menandakan ketidakpastian model.")
         return prediction_name, sanitize_for_filename(icon_base_name), description
 
-    # 3. Kasus Prediksi Dominan
+    # 3. Kasus Prediksi Dominan (keyakinan tinggi pada satu kelas)
     if top_prob >= 75:
         prediction_name = top_class
         icon_base_name = top_class
@@ -78,7 +124,7 @@ def smart_predict(confidences):
                        f"Ini mengindikasikan hujan dengan jarak pandang rendah.")
         return prediction_name, sanitize_for_filename(icon_base_name), description
 
-    # Aturan: Mendung (Berawan + Hujan)
+    # Aturan: Mendung (kombinasi Berawan + Hujan)
     if {"Berawan", "Hujan"}.issubset(top_three_classes) and (top_class in ["Berawan", "Hujan"]) and (second_class in ["Berawan", "Hujan"]):
         prediction_name = "Mendung"
         icon_base_name = "Mendung"
@@ -86,7 +132,7 @@ def smart_predict(confidences):
                        f"yang signifikan ({prob_map.get('Hujan', 0)}%). Ini adalah kondisi mendung dengan potensi hujan.")
         return prediction_name, sanitize_for_filename(icon_base_name), description
 
-    # Aturan: Cerah Berawan (Cerah + Berawan)
+    # Aturan: Cerah Berawan (kombinasi Cerah + Berawan)
     if {"Cerah", "Berawan"}.issubset(top_three_classes) and (top_class in ["Cerah", "Berawan"]) and (second_class in ["Cerah", "Berawan"]):
         prediction_name = "Cerah Berawan"
         icon_base_name = "Cerah Berawan"
@@ -94,7 +140,7 @@ def smart_predict(confidences):
                        f"dan <strong>Berawan</strong> ({prob_map.get('Berawan', 0)}%), mengarah pada kesimpulan cuaca cerah berawan.")
         return prediction_name, sanitize_for_filename(icon_base_name), description
 
-    # Aturan: Hujan Cerah (Sunshower) dengan cek domain
+    # Aturan: Hujan Cerah (Sunshower) dengan pemeriksaan domain
     if {"Hujan", "Cerah"}.issubset(top_three_classes) and third_prob < 15: # Pengetahuan domain: Sunshower jarang memiliki komponen ketiga yang kuat
         prediction_name = "Hujan Cerah (Sunshower)"
         icon_base_name = "Hujan Cerah"
@@ -102,10 +148,11 @@ def smart_predict(confidences):
                        f"({prob_map.get('Cerah', 0)}%). Kondisi ini sering disebut sebagai 'sunshower'.")
         return prediction_name, sanitize_for_filename(icon_base_name), description
 
-    # 5. Kasus Standar (Fallback)
+    # 5. Kasus Standar (Fallback jika tidak ada aturan yang cocok)
     prediction_name = top_class
     icon_base_name = top_class
     secondary_influence = ""
+    # Menambahkan informasi tentang kelas kedua jika probabilitasnya cukup signifikan.
     if second_prob > 15:
         secondary_influence = f", dengan pengaruh sekunder dari kondisi <strong>{second_class}</strong> ({second_prob}%)"
     description = (f"Kondisi cuaca utama teridentifikasi sebagai <strong>{top_class}</strong> (probabilitas {top_prob}%){secondary_influence}.")

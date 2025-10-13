@@ -1,13 +1,22 @@
+<!-- 
+  Halaman ini adalah halaman utama (beranda) aplikasi.
+  Pengguna dapat mengunggah gambar cuaca melalui halaman ini.
+  Halaman ini mewarisi struktur dari 'base.html'.
+-->
 {% extends "base.html" %}
 
+<!-- Mengatur judul halaman -->
 {% block title %}Halaman Utama - Klasifikasi Cuaca{% endblock %}
 
+<!-- Konten utama halaman -->
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-8 text-center">
+        <!-- Judul dan deskripsi utama halaman -->
         <h1 class="display-4 fw-bold">Analisis Cuaca</h1>
         <p class="lead text-muted mb-4">Unggah satu atau lebih gambar untuk mendapatkan analisis cuaca.</p>
         
+        <!-- Bagian untuk menampilkan pesan kilat (flash messages), seperti kesalahan validasi -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -19,18 +28,24 @@
             {% endif %}
         {% endwith %}
 
+        <!-- Kartu yang berisi formulir unggah -->
         <div id="upload-card" class="card mt-4 shadow-lg">
             <div class="card-body p-4 p-md-5">
+                <!-- Formulir untuk mengirim gambar ke server untuk prediksi -->
                 <form id="prediction-form" action="{{ url_for('predict.predict') }}" method="post" enctype="multipart/form-data">
+                    <!-- Area untuk 'drag and drop' atau memilih berkas secara manual -->
                     <div class="file-drop-area">
                         <svg class="file-drop-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                             <path opacity="0.4" d="M12 16L12 8M12 8L15 11M12 8L9 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                         <p class="file-drop-text"><strong>Seret & Lepas</strong> gambar di sini, atau <strong>klik untuk memilih</strong>.</p>
+                        <!-- Input berkas yang tersembunyi -->
                         <input class="file-input" type="file" id="files" name="files" accept="image/png, image/jpeg, image/jpg" required multiple>
+                        <!-- Area untuk menampilkan pratinjau nama berkas yang dipilih -->
                         <div id="file-name-preview" class="form-text mt-3"></div>
                     </div>
+                    <!-- Tombol untuk mengirimkan formulir -->
                     <div class="d-grid mt-4">
                         <button id="submit-btn" type="submit" class="btn btn-primary btn-lg" disabled>
                             Analisis Cuaca
@@ -40,6 +55,7 @@
             </div>
         </div>
         
+        <!-- Indikator pemuatan (spinner) yang ditampilkan saat gambar sedang dianalisis -->
         <div id="loading-spinner" class="text-center mt-5" style="display: none;">
             <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
                 <span class="visually-hidden">Loading...</span>
@@ -50,6 +66,7 @@
 </div>
 {% endblock %}
 
+<!-- Skrip khusus untuk halaman ini yang menangani logika unggah berkas -->
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/main-upload.js') }}"></script>
 {% endblock %}
