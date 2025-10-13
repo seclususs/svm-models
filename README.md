@@ -345,7 +345,7 @@ Menemukan kombinasi `C` dan `gamma` yang optimal sangat penting.
 ### Metrik Model Klasifikasi Utama
 #### Confusion Matrix
 ![CM Model Klasifikasi](docs/images/result/confusion_matrix.png)
-**Interpretasi Mendalam**: Matriks ini menunjukkan bahwa model sangat akurat. Kelas "Berawan" dan "Hujan" memiliki performa terbaik. Kesalahan yang paling sering terjadi adalah antara "Cerah" dan kelas lain ("Berawan", "Hujan"), yang secara visual dapat dimengerti—misalnya, gambar matahari terbenam yang cerah bisa memiliki warna oranye dan merah yang mirip dengan awan badai.
+- **Interpretasi Mendalam**: Matriks ini menunjukkan bahwa model sangat akurat. Kelas "Berawan" dan "Hujan" memiliki performa terbaik. Kesalahan yang paling sering terjadi adalah antara "Cerah" dan kelas lain ("Berawan", "Hujan"), yang secara visual dapat dimengerti—misalnya, gambar matahari terbenam yang cerah bisa memiliki warna oranye dan merah yang mirip dengan awan badai.
 
 #### Laporan Klasifikasi
 **Akurasi Keseluruhan**: 0.9042
@@ -364,15 +364,15 @@ Menemukan kombinasi `C` dan `gamma` yang optimal sangat penting.
 
 #### Kurva ROC dan AUC
 ![Kurva ROC](docs/images/result/roc_curve.png)
-**Interpretasi**: Area di Bawah Kurva (AUC) untuk semua kelas mendekati 1.0. Ini berarti jika kita memilih satu gambar positif dan satu gambar negatif secara acak, model memiliki probabilitas 98-99% untuk memberi skor yang lebih tinggi pada gambar positif. Ini menunjukkan daya pemisah yang sangat baik.
+- **Interpretasi**: Area di Bawah Kurva (AUC) untuk semua kelas mendekati 1.0. Ini berarti jika kita memilih satu gambar positif dan satu gambar negatif secara acak, model memiliki probabilitas 98-99% untuk memberi skor yang lebih tinggi pada gambar positif. Ini menunjukkan daya pemisah yang sangat baik.
 
 #### Kurva Precision-Recall
 ![Kurva RP](docs/images/result/precision_recall_curve.png)
-**Interpretasi**: Kurva yang tetap berada di dekat sudut kanan atas (presisi=1.0, recall=1.0) adalah ideal. Nilai Average Precision (AP) yang tinggi (0.96-0.97) menunjukkan bahwa model dapat mempertahankan presisi yang tinggi bahkan ketika mencoba untuk mengidentifikasi sebagian besar sampel positif (recall tinggi).
+- **Interpretasi**: Kurva yang tetap berada di dekat sudut kanan atas (presisi=1.0, recall=1.0) adalah ideal. Nilai Average Precision (AP) yang tinggi (0.96-0.97) menunjukkan bahwa model dapat mempertahankan presisi yang tinggi bahkan ketika mencoba untuk mengidentifikasi sebagian besar sampel positif (recall tinggi).
 
 ### Metrik Model Detektor Anomali
 ![CM Detektor](docs/images/result/confusion-matrix-detector.png)
-**Interpretasi**: Model ini sangat efektif sebagai "penjaga gerbang". Ia memiliki tingkat recall yang tinggi untuk kelas normal (232/240 = 96.7%), yang berarti ia jarang salah menolak gambar cuaca yang valid. Tingkat precision-nya untuk kelas normal juga tinggi (232/252 = 92.1%), artinya sebagian besar yang diloloskan memang gambar cuaca.
+- **Interpretasi**: Model ini sangat efektif sebagai "penjaga gerbang". Ia memiliki tingkat recall yang tinggi untuk kelas normal (232/240 = 96.7%), yang berarti ia jarang salah menolak gambar cuaca yang valid. Tingkat precision-nya untuk kelas normal juga tinggi (232/252 = 92.1%), artinya sebagian besar yang diloloskan memang gambar cuaca.
 
 ### Analisis Kualitatif dan Studi Kasus Kegagalan
 ![Kegagalan](docs/images/result/incorrect_predictions.png)
